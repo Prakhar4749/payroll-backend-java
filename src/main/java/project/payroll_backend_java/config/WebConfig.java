@@ -1,0 +1,20 @@
+package project.payroll_backend_java.config;
+
+import project.payroll_backend_java.component.DatabaseHealthInterceptor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+@Configuration
+public class WebConfig implements WebMvcConfigurer {
+
+    @Autowired
+    private DatabaseHealthInterceptor databaseHealthInterceptor;
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(databaseHealthInterceptor)
+                .addPathPatterns("/**"); // Apply to all routes
+    }
+}
