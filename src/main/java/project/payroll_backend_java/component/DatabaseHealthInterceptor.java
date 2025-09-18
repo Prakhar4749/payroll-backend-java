@@ -16,7 +16,7 @@ public class DatabaseHealthInterceptor implements HandlerInterceptor {
     private DataSource dataSource;
 
     private long lastChecked = 0;
-    private boolean isDbConnected = false;
+    private boolean isDbConnected = false ;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
