@@ -1,5 +1,6 @@
 package project.payroll_backend_java.controller;
 
+import io.jsonwebtoken.SignatureAlgorithm;
 import project.payroll_backend_java.entity.UserLoginDetails;
 import project.payroll_backend_java.service.UserLoginDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import io.jsonwebtoken.security.Keys;
 import javax.crypto.SecretKey;
 import java.util.List;
 import java.util.Map;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Optional;
 
@@ -134,6 +136,8 @@ public class AuthController {
             SecretKey key = Keys.hmacShaKeyFor(secretKey.getBytes());
             String token = Jwts.builder()
                     .claim("name", user.getUserName())
+                    .setIssuedAt(new Date()) // when token is created
+                    .setExpiration(new Date(System.currentTimeMillis() + 7 * 24 * 60 * 60 * 1000L)) // 7 days
                     .signWith(key)
                     .compact();
 
