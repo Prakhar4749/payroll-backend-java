@@ -25,7 +25,7 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedOrigins("https://payroll.project.prakhar.life")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
-                .allowCredentials(true)
+                .allowCredentials(false)
                 .maxAge(3600);
     }
 }
