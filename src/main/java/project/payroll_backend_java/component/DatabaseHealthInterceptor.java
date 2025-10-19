@@ -22,6 +22,7 @@ public class DatabaseHealthInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         long now = System.currentTimeMillis();
 
+
         // Only re-check the database every 30 seconds
         if (lastChecked == 0 || now - lastChecked > 30000) {
             try (Connection connection = dataSource.getConnection()) {
