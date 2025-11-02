@@ -12,7 +12,7 @@ import project.payroll_backend_java.entity.SalaryArchiveId;
 @Repository
 public interface SalaryArchiveRepository extends JpaRepository<SalaryArchive, SalaryArchiveId> {
 
-    @Query(value = "SELECT CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END FROM salary_archive WHERE e_id = :e_id LIMIT 1",
+    @Query(value = "SELECT CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END FROM emp_details WHERE e_id = :e_id LIMIT 1",
             nativeQuery = true)
     int checkEmployeeExists(@Param("e_id") String e_id);
 

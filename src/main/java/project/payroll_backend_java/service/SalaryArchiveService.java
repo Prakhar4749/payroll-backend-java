@@ -21,9 +21,12 @@ public class SalaryArchiveService {
         try {
             int exists = salaryArchiveRepo.checkEmployeeExists(e_id);
 
+            Map<String, Object> result = new HashMap<>();
+            result.put("e_id", exists > 0);
+
             response.put("success", true);
             response.put("message", exists > 0 ? "Employee ID found" : "Employee ID not found");
-            response.put("result", exists > 0);
+            response.put("result", result);
         } catch (Exception e) {
             response.put("success", false);
             response.put("message", "Error checking employee ID: " + e.getMessage());
