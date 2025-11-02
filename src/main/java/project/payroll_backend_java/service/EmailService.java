@@ -45,14 +45,18 @@ public class EmailService {
 
             // Use HTML content if provided, otherwise use plain text
             if (html != null && !html.trim().isEmpty()) {
-                helper.setText(text, html);
+                helper.setText(text != null ? text : "", html);
             } else {
-                helper.setText(text);
+                helper.setText(text != null ? text : "");
             }
 
             // Add attachment if provided
             if (file != null && !file.isEmpty()) {
-                helper.addAttachment(file_name, file);
+                // Use provided filename or fallback to MultipartFile's original filename
+                String safeFileName = (file_name != null && !file_name.trim().isEmpty())
+                        ? file_name
+                        : file.getOriginalFilename();
+                helper.addAttachment(safeFileName, file);
             }
 
             mailSender.send(message);

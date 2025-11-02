@@ -89,17 +89,18 @@ public class PayslipController {
 
     @PostMapping("/send_email")
     public ResponseEntity<Map<String, Object>> sendEmailWithPdf(
-            @RequestParam(value = "to", required = false) String to,
-            @RequestParam(value = "subject", required = false) String subject,
+            @RequestParam(value = "to") String to,
+            @RequestParam(value = "subject") String subject,
             @RequestParam(value = "text", required = false) String text,
             @RequestParam(value = "html", required = false) String html,
             @RequestParam(value = "file", required = false) MultipartFile file,
             @RequestParam(value = "file_name", required = false) String file_name) {
 
+        Map<String, Object> response = new HashMap<>();
+
         try {
             // Validate required fields
             if (to == null || to.trim().isEmpty()) {
-                Map<String, Object> response = new HashMap<>();
                 response.put("success", false);
                 response.put("message", "Recipient email (to) is required");
                 response.put("result", null);
@@ -107,23 +108,25 @@ public class PayslipController {
             }
 
             if (subject == null || subject.trim().isEmpty()) {
-                Map<String, Object> response = new HashMap<>();
                 response.put("success", false);
                 response.put("message", "Email subject is required");
                 response.put("result", null);
                 return ResponseEntity.ok(response);
             }
 
+            // Call service
             Map<String, Object> serviceResponse = emailService.sendEmailWithAttachment(
                     to, subject, text, html, file, file_name
             );
+
             return ResponseEntity.ok(serviceResponse);
+
         } catch (Exception err) {
-            Map<String, Object> response = new HashMap<>();
             response.put("success", false);
             response.put("message", "Error sending email: " + err.getMessage());
             response.put("result", null);
             return ResponseEntity.ok(response);
         }
     }
+
 }
