@@ -2,6 +2,9 @@ package project.payroll_backend_java.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import project.payroll_backend_java.entity.DeptDetails;
+import project.payroll_backend_java.entity.EmpBankDetails;
+import project.payroll_backend_java.entity.EmpDetails;
 import project.payroll_backend_java.entity.SalaryArchive;
 import project.payroll_backend_java.repository.SalaryArchiveRepository;
 
@@ -256,18 +259,90 @@ public class SalaryArchiveService {
             // Normalize salary_month format
             salary_month = normalizeSalaryMonth(salary_month);
 
+            // Fetch payslip from salary_archive
             SalaryArchive payslip = salaryArchiveRepo.findPayslipByDetails(e_id, salary_month, salary_year);
 
-            if (payslip != null) {
-                response.put("success", true);
-                response.put("message", "Payslip retrieved successfully");
-                response.put("result", payslip);
-            } else {
+            if (payslip == null) {
                 response.put("success", false);
                 response.put("message", "Payslip not found for employee " + e_id +
                         " for period " + salary_month + "/" + salary_year);
                 response.put("result", null);
+                return response;
             }
+
+            // Fetch employee details
+            Map<String, Object> empDetails = salaryArchiveRepo.findEmpDetailsById(e_id);
+            if (empDetails == null || empDetails.isEmpty()) {
+                response.put("success", false);
+                response.put("message", "Employee details not found for e_id: " + e_id);
+                response.put("result", null);
+                return response;
+            }
+
+            // Fetch department details
+            Map<String, Object> deptDetails = salaryArchiveRepo.findDeptDetailsByEmpId(e_id);
+
+            // Fetch bank details
+            Map<String, Object> bankDetails = salaryArchiveRepo.findBankDetailsByEmpId(e_id);
+
+            // Build salary_details from SalaryArchive entity
+            Map<String, Object> salaryDetails = new HashMap<>();
+            salaryDetails.put("e_id", payslip.getE_id());
+            salaryDetails.put("salary_month", payslip.getSalary_month());
+            salaryDetails.put("salary_year", payslip.getSalary_year());
+            salaryDetails.put("e_name", payslip.getE_name());
+            salaryDetails.put("payslip_issue_date", payslip.getPayslip_issue_date());
+
+            // Earning details
+            salaryDetails.put("basic_salary", payslip.getBasic_salary());
+            salaryDetails.put("special_pay", payslip.getSpecial_pay());
+            salaryDetails.put("dearness_allowance", payslip.getDearness_allowance());
+            salaryDetails.put("DA", payslip.getDA());
+            salaryDetails.put("ADA", payslip.getADA());
+            salaryDetails.put("interim_relief", payslip.getInterim_relief());
+            salaryDetails.put("HRA", payslip.getHRA());
+            salaryDetails.put("CCA", payslip.getCCA());
+            salaryDetails.put("conveyance", payslip.getConveyance());
+            salaryDetails.put("medical", payslip.getMedical());
+            salaryDetails.put("washing_allowance", payslip.getWashing_allowance());
+            salaryDetails.put("BDP", payslip.getBDP());
+            salaryDetails.put("arrears", payslip.getArrears());
+
+            // Deduction details
+            salaryDetails.put("leave_days", payslip.getLeave_days());
+            salaryDetails.put("leave_deduction_amount", payslip.getLeave_deduction_amount());
+            salaryDetails.put("deduction_CPF", payslip.getDeduction_CPF());
+            salaryDetails.put("GIS", payslip.getGIS());
+            salaryDetails.put("house_rent", payslip.getHouse_rent());
+            salaryDetails.put("water_charges", payslip.getWater_charges());
+            salaryDetails.put("electricity_charges", payslip.getElectricity_charges());
+            salaryDetails.put("vehicle_deduction", payslip.getVehicle_deduction());
+            salaryDetails.put("HB_loan", payslip.getHB_loan());
+            salaryDetails.put("GPF_loan", payslip.getGPF_loan());
+            salaryDetails.put("festival_loan", payslip.getFestival_loan());
+            salaryDetails.put("grain_charges", payslip.getGrain_charges());
+            salaryDetails.put("bank_advance", payslip.getBank_advance());
+            salaryDetails.put("advance", payslip.getAdvance());
+            salaryDetails.put("RGPV_advance", payslip.getRGPV_advance());
+            salaryDetails.put("income_tax", payslip.getIncome_tax());
+            salaryDetails.put("professional_tax", payslip.getProfessional_tax());
+
+            // Totals
+            salaryDetails.put("total_earning", payslip.getTotal_earning());
+            salaryDetails.put("total_deduction", payslip.getTotal_deduction());
+            salaryDetails.put("net_payable", payslip.getNet_payable());
+
+            // Build the final result structure
+            Map<String, Object> result = new HashMap<>();
+            result.put("emp_details", empDetails);
+            result.put("dept_details", deptDetails);
+            result.put("bank_details", bankDetails);
+            result.put("salary_details", salaryDetails);
+
+            response.put("success", true);
+            response.put("message", "Payslip retrieved successfully");
+            response.put("result", result);
+
         } catch (Exception e) {
             response.put("success", false);
             response.put("message", "Error retrieving payslip: " + e.getMessage());
@@ -315,4 +390,93 @@ public class SalaryArchiveService {
         // Capitalize first letter and make rest lowercase
         return month.substring(0, 1).toUpperCase() + month.substring(1).toLowerCase();
     }
+
+    // Helper method to map slary data
+    private Map<String, Object> buildEmpDetailsMap(EmpDetails emp) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("e_id", emp.getE_id());
+        map.put("e_name", emp.getE_name());
+        map.put("e_mobile_number", emp.getE_mobile_number());
+        map.put("e_gender", emp.getE_gender());
+        map.put("e_email", emp.getE_email());
+        map.put("e_address", emp.getE_address());
+        map.put("e_photo", emp.getE_photo());
+        map.put("d_id", emp.getD_id());
+        map.put("e_designation", emp.getE_designation());
+        map.put("e_group", emp.getE_group());
+        map.put("e_date_of_joining", emp.getE_date_of_joining());
+        map.put("e_DOB", emp.getE_DOB());
+        return map;
+    }
+
+    private Map<String, Object> buildDeptDetailsMap(DeptDetails dept) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("d_id", dept.getD_id());
+        map.put("d_name", dept.getD_name());
+        return map;
+    }
+
+    private Map<String, Object> buildBankDetailsMap(EmpBankDetails bank) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("e_id", bank.getE_id());
+        map.put("e_name", bank.getE_name());
+        map.put("e_bank_name", bank.getE_bank_name());
+        map.put("e_bank_acc_number", bank.getE_bank_acc_number());
+        map.put("e_pan_number", bank.getE_pan_number());
+        map.put("e_bank_IFSC", bank.getE_bank_IFSC());
+        map.put("e_cpf_or_gpf_number", bank.getE_cpf_or_gpf_number());
+        return map;
+    }
+
+    private Map<String, Object> buildSalaryDetailsMap(SalaryArchive payslip) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("e_id", payslip.getE_id());
+        map.put("salary_month", payslip.getSalary_month());
+        map.put("salary_year", payslip.getSalary_year());
+        map.put("e_name", payslip.getE_name());
+        map.put("payslip_issue_date", payslip.getPayslip_issue_date());
+
+        // Earning details
+        map.put("basic_salary", payslip.getBasic_salary());
+        map.put("special_pay", payslip.getSpecial_pay());
+        map.put("dearness_allowance", payslip.getDearness_allowance());
+        map.put("DA", payslip.getDA());
+        map.put("ADA", payslip.getADA());
+        map.put("interim_relief", payslip.getInterim_relief());
+        map.put("HRA", payslip.getHRA());
+        map.put("CCA", payslip.getCCA());
+        map.put("conveyance", payslip.getConveyance());
+        map.put("medical", payslip.getMedical());
+        map.put("washing_allowance", payslip.getWashing_allowance());
+        map.put("BDP", payslip.getBDP());
+        map.put("arrears", payslip.getArrears());
+
+        // Deduction details
+        map.put("leave_days", payslip.getLeave_days());
+        map.put("leave_deduction_amount", payslip.getLeave_deduction_amount());
+        map.put("deduction_CPF", payslip.getDeduction_CPF());
+        map.put("GIS", payslip.getGIS());
+        map.put("house_rent", payslip.getHouse_rent());
+        map.put("water_charges", payslip.getWater_charges());
+        map.put("electricity_charges", payslip.getElectricity_charges());
+        map.put("vehicle_deduction", payslip.getVehicle_deduction());
+        map.put("HB_loan", payslip.getHB_loan());
+        map.put("GPF_loan", payslip.getGPF_loan());
+        map.put("festival_loan", payslip.getFestival_loan());
+        map.put("grain_charges", payslip.getGrain_charges());
+        map.put("bank_advance", payslip.getBank_advance());
+        map.put("advance", payslip.getAdvance());
+        map.put("RGPV_advance", payslip.getRGPV_advance());
+        map.put("income_tax", payslip.getIncome_tax());
+        map.put("professional_tax", payslip.getProfessional_tax());
+
+        // Totals
+        map.put("total_earning", payslip.getTotal_earning());
+        map.put("total_deduction", payslip.getTotal_deduction());
+        map.put("net_payable", payslip.getNet_payable());
+
+        return map;
+    }
+
+
 }

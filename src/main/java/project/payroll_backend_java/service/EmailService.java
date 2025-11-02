@@ -18,7 +18,7 @@ public class EmailService {
 
     public Map<String, Object> sendEmailWithAttachment(String to, String subject,
                                                        String text, String html,
-                                                       MultipartFile file, String fileName) {
+                                                       MultipartFile file, String file_name) {
         Map<String, Object> response = new HashMap<>();
 
         try {
@@ -52,7 +52,7 @@ public class EmailService {
 
             // Add attachment if provided
             if (file != null && !file.isEmpty()) {
-                helper.addAttachment(fileName, file);
+                helper.addAttachment(file_name, file);
             }
 
             mailSender.send(message);

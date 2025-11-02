@@ -1,13 +1,17 @@
 package project.payroll_backend_java.repository;
 
 import jakarta.transaction.Transactional;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import project.payroll_backend_java.entity.EmpDetails;
 import project.payroll_backend_java.entity.SalaryArchive;
 import project.payroll_backend_java.entity.SalaryArchiveId;
+
+import java.util.Map;
 
 @Repository
 public interface SalaryArchiveRepository extends JpaRepository<SalaryArchive, SalaryArchiveId> {
@@ -29,6 +33,21 @@ public interface SalaryArchiveRepository extends JpaRepository<SalaryArchive, Sa
     SalaryArchive findPayslipByDetails(@Param("e_id") String e_id,
                                        @Param("salary_month") String salary_month,
                                        @Param("salary_year") Integer salary_year);
+
+
+
+
+
+    @Query(value = "SELECT * FROM emp_details WHERE e_id = :e_id", nativeQuery = true)
+    java.util.Map<String, Object> findEmpDetailsById(@Param("e_id") String e_id);
+
+    @Query(value = "SELECT * FROM dept_details WHERE d_id = (SELECT d_id FROM emp_details WHERE e_id = :e_id)",
+            nativeQuery = true)
+    java.util.Map<String, Object> findDeptDetailsByEmpId(@Param("e_id") String e_id);
+
+    @Query(value = "SELECT * FROM emp_bank_details WHERE e_id = :e_id", nativeQuery = true)
+    java.util.Map<String, Object> findBankDetailsByEmpId(@Param("e_id") String e_id);
+
 
     @Modifying
     @Transactional
