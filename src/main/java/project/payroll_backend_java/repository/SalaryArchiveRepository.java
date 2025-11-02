@@ -16,6 +16,14 @@ public interface SalaryArchiveRepository extends JpaRepository<SalaryArchive, Sa
             nativeQuery = true)
     int checkEmployeeExists(@Param("e_id") String e_id);
 
+    @Query(value = "SELECT CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END FROM salary_archive WHERE e_id = :e_id AND salary_month = :salary_month AND salary_year = :salary_year LIMIT 1",
+            nativeQuery = true)
+    int checkPayslipExists(@Param("e_id") String e_id,
+                           @Param("salary_month") String salary_month,
+                           @Param("salary_year") Integer salary_year);
+
+
+
     @Query(value = "SELECT * FROM salary_archive WHERE e_id = :e_id AND salary_month = :salary_month AND salary_year = :salary_year",
             nativeQuery = true)
     SalaryArchive findPayslipByDetails(@Param("e_id") String e_id,

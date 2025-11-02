@@ -63,16 +63,19 @@ public class SalaryArchiveService {
             // Normalize salary_month format
             salary_month = normalizeSalaryMonth(salary_month);
 
-            SalaryArchive payslip = salaryArchiveRepo.findPayslipByDetails(e_id, salary_month, salary_year);
+            int payslip = salaryArchiveRepo.checkPayslipExists(e_id, salary_month, salary_year);
 
-            if (payslip != null) {
+            Map<String, Object> result = new HashMap<>();
+            result.put("payslip", payslip > 0);
+
+            if (payslip != 0) {
                 response.put("success", true);
                 response.put("message", "Payslip found in archive");
-                response.put("result", payslip);
+                response.put("result", result);
             } else {
                 response.put("success", true);
                 response.put("message", "Payslip not found in archive");
-                response.put("result", null);
+                response.put("result", result);
             }
         } catch (Exception e) {
             response.put("success", false);
@@ -138,9 +141,9 @@ public class SalaryArchiveService {
             }
 
             // Check if payslip already exists
-            SalaryArchive existingPayslip = salaryArchiveRepo.findPayslipByDetails(e_id, salary_month, salary_year);
+            int existingPayslip = salaryArchiveRepo.checkPayslipExists(e_id, salary_month, salary_year);
 
-            if (existingPayslip != null) {
+            if (existingPayslip != 0) {
                 response.put("success", false);
                 response.put("message", "Payslip already exists for this employee and period");
                 response.put("result", null);
