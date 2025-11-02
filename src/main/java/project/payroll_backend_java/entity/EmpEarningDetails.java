@@ -2,41 +2,48 @@ package project.payroll_backend_java.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "emp_earning_details")
+
+@NoArgsConstructor
+@AllArgsConstructor
 public class EmpEarningDetails {
 
     @Id
     @Column(name = "e_id", length = 5, nullable = false)
-    private String eId;
+    private String e_id;
 
     @Column(name = "e_name", length = 30, nullable = false)
-    private String eName;
+    private String e_name;
 
     @Column(name = "basic_salary", nullable = false)
-    private Integer basicSalary;
+    private Integer basic_salary;
 
     @Column(name = "special_pay")
-    private Integer specialPay;
+    private Integer special_pay;
 
     @Column(name = "dearness_allowance")
-    private Integer dearnessAllowance;
+    private Integer dearness_allowance;
 
     @Column(name = "DA")
-    private Integer da;
+    private Integer DA;
 
     @Column(name = "ADA")
-    private Integer ada;
+    private Integer ADA;
 
     @Column(name = "interim_relief")
-    private Integer interimRelief;
+    private Integer interim_relief;
 
     @Column(name = "HRA")
-    private Integer hra;
+    private Integer HRA;
 
     @Column(name = "CCA")
-    private Integer cca;
+    private Integer CCA;
 
     @Column(name = "conveyance")
     private Integer conveyance;
@@ -45,89 +52,145 @@ public class EmpEarningDetails {
     private Integer medical;
 
     @Column(name = "washing_allowance")
-    private Integer washingAllowance;
+    private Integer washing_allowance;
 
     @Column(name = "BDP")
-    private Integer bdp;
+    private Integer BDP;
 
     @Column(name = "arrears")
     private Integer arrears;
 
-    // ADD THIS RELATIONSHIP - This is the key addition!
+    // ✅ Corrected Relationship
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "e_id")
+    @JoinColumn(name = "e_id", referencedColumnName = "e_id", insertable = false, updatable = false)
     @JsonIgnore
-    private EmpDetails empDetails;
+    private EmpDetails emp_details;
 
-    // Constructors
-    public EmpEarningDetails() {}
-
-    public EmpEarningDetails(String eId, String eName, Integer basicSalary) {
-        this.eId = eId;
-        this.eName = eName;
-        this.basicSalary = basicSalary != null ? basicSalary : 0;
-        // Initialize all other fields with 0
-        this.specialPay = 0;
-        this.dearnessAllowance = 0;
-        this.da = 0;
-        this.ada = 0;
-        this.interimRelief = 0;
-        this.hra = 0;
-        this.cca = 0;
-        this.conveyance = 0;
-        this.medical = 0;
-        this.washingAllowance = 0;
-        this.bdp = 0;
-        this.arrears = 0;
+    public String getE_id() {
+        return e_id;
     }
 
-    // All Getters and Setters
-    public String getEId() { return eId; }
-    public void setEId(String eId) { this.eId = eId; }
+    public void setE_id(String e_id) {
+        this.e_id = e_id;
+    }
 
-    public String getEName() { return eName; }
-    public void setEName(String eName) { this.eName = eName; }
+    public String getE_name() {
+        return e_name;
+    }
 
-    public Integer getBasicSalary() { return basicSalary; }
-    public void setBasicSalary(Integer basicSalary) { this.basicSalary = basicSalary; }
+    public void setE_name(String e_name) {
+        this.e_name = e_name;
+    }
 
-    public Integer getSpecialPay() { return specialPay; }
-    public void setSpecialPay(Integer specialPay) { this.specialPay = specialPay; }
+    public Integer getBasic_salary() {
+        return basic_salary;
+    }
 
-    public Integer getDearnessAllowance() { return dearnessAllowance; }
-    public void setDearnessAllowance(Integer dearnessAllowance) { this.dearnessAllowance = dearnessAllowance; }
+    public void setBasic_salary(Integer basic_salary) {
+        this.basic_salary = basic_salary;
+    }
 
-    public Integer getDa() { return da; }
-    public void setDa(Integer da) { this.da = da; }
+    public Integer getSpecial_pay() {
+        return special_pay;
+    }
 
-    public Integer getAda() { return ada; }
-    public void setAda(Integer ada) { this.ada = ada; }
+    public void setSpecial_pay(Integer special_pay) {
+        this.special_pay = special_pay;
+    }
 
-    public Integer getInterimRelief() { return interimRelief; }
-    public void setInterimRelief(Integer interimRelief) { this.interimRelief = interimRelief; }
+    public Integer getDearness_allowance() {
+        return dearness_allowance;
+    }
 
-    public Integer getHra() { return hra; }
-    public void setHra(Integer hra) { this.hra = hra; }
+    public void setDearness_allowance(Integer dearness_allowance) {
+        this.dearness_allowance = dearness_allowance;
+    }
 
-    public Integer getCca() { return cca; }
-    public void setCca(Integer cca) { this.cca = cca; }
+    public Integer getDA() {
+        return DA;
+    }
 
-    public Integer getConveyance() { return conveyance; }
-    public void setConveyance(Integer conveyance) { this.conveyance = conveyance; }
+    public void setDA(Integer DA) {
+        this.DA = DA;
+    }
 
-    public Integer getMedical() { return medical; }
-    public void setMedical(Integer medical) { this.medical = medical; }
+    public Integer getADA() {
+        return ADA;
+    }
 
-    public Integer getWashingAllowance() { return washingAllowance; }
-    public void setWashingAllowance(Integer washingAllowance) { this.washingAllowance = washingAllowance; }
+    public void setADA(Integer ADA) {
+        this.ADA = ADA;
+    }
 
-    public Integer getBdp() { return bdp; }
-    public void setBdp(Integer bdp) { this.bdp = bdp; }
+    public Integer getInterim_relief() {
+        return interim_relief;
+    }
 
-    public Integer getArrears() { return arrears; }
-    public void setArrears(Integer arrears) { this.arrears = arrears; }
+    public void setInterim_relief(Integer interim_relief) {
+        this.interim_relief = interim_relief;
+    }
 
-    // NEW GETTER/SETTER FOR RELATIONSHIP
-    public EmpDetails getEmpDetails() { return empDetails; }
-    public void setEmpDetails(EmpDetails empDetails) { this.empDetails = empDetails; }
+    public Integer getHRA() {
+        return HRA;
+    }
+
+    public void setHRA(Integer HRA) {
+        this.HRA = HRA;
+    }
+
+    public Integer getCCA() {
+        return CCA;
+    }
+
+    public void setCCA(Integer CCA) {
+        this.CCA = CCA;
+    }
+
+    public Integer getConveyance() {
+        return conveyance;
+    }
+
+    public void setConveyance(Integer conveyance) {
+        this.conveyance = conveyance;
+    }
+
+    public Integer getMedical() {
+        return medical;
+    }
+
+    public void setMedical(Integer medical) {
+        this.medical = medical;
+    }
+
+    public Integer getWashing_allowance() {
+        return washing_allowance;
+    }
+
+    public void setWashing_allowance(Integer washing_allowance) {
+        this.washing_allowance = washing_allowance;
+    }
+
+    public Integer getBDP() {
+        return BDP;
+    }
+
+    public void setBDP(Integer BDP) {
+        this.BDP = BDP;
+    }
+
+    public Integer getArrears() {
+        return arrears;
+    }
+
+    public void setArrears(Integer arrears) {
+        this.arrears = arrears;
+    }
+
+    public EmpDetails getEmp_details() {
+        return emp_details;
+    }
+
+    public void setEmp_details(EmpDetails emp_details) {
+        this.emp_details = emp_details;
+    }
 }

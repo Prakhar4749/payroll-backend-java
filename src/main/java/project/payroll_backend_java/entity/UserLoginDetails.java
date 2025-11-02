@@ -1,30 +1,43 @@
 package project.payroll_backend_java.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
-@Table(name = "user_login_details")
+@Table(
+        name = "user_login_details",
+        indexes = {
+                @Index(name = "idx_username", columnList = "user_name", unique = true)
+        }
+)
+
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserLoginDetails {
 
     @Id
-    @Column(name = "user_name", length = 50, unique = true)
-    private String userName;
+    @Column(name = "user_name", length = 50, nullable = false, unique = true)
+    private String user_name;
 
     @Column(name = "user_password", nullable = false)
-    private String userPassword;
+    private String user_password;
 
-    // Constructors
-    public UserLoginDetails() {}
-
-    public UserLoginDetails(String userName, String userPassword) {
-        this.userName = userName;
-        this.userPassword = userPassword;
+    public String getUser_name() {
+        return user_name;
     }
 
-    // Getters and Setters
-    public String getUserName() { return userName; }
-    public void setUserName(String userName) { this.userName = userName; }
+    public void setUser_name(String user_name) {
+        this.user_name = user_name;
+    }
 
-    public String getUserPassword() { return userPassword; }
-    public void setUserPassword(String userPassword) { this.userPassword = userPassword; }
+    public String getUser_password() {
+        return user_password;
+    }
+
+    public void setUser_password(String user_password) {
+        this.user_password = user_password;
+    }
 }

@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/dept")
@@ -35,179 +34,113 @@ public class DeptController {
         }
 
         try {
-            List<DeptDetails> departments = deptDetailsService.getAllDepartments();
-            dataWhichIsNotChange = departments;
-            toRunSaved = true;
+            Map<String, Object> serviceResponse = deptDetailsService.getAllDept();
 
-            response.put("success", true);
-            response.put("message", "data has been fetched successfully");
-            response.put("result", departments);
-            return ResponseEntity.ok(response);
+            if ((Boolean) serviceResponse.get("success")) {
+                dataWhichIsNotChange = (List<DeptDetails>) serviceResponse.get("result");
+                toRunSaved = true;
+            }
+
+            return ResponseEntity.ok(serviceResponse);
 
         } catch (Exception err) {
             response.put("success", false);
             response.put("message", "error in fetching details");
-            response.put("result", err.getMessage());
+            response.put("result", null);
             return ResponseEntity.ok(response);
         }
     }
 
     @GetMapping("/{d_id}")
-    public ResponseEntity<Map<String, Object>> getDIdDetails(@PathVariable("d_id") String dId) {
-        Map<String, Object> response = new HashMap<>();
-
+    public ResponseEntity<Map<String, Object>> getDIdDetails(@PathVariable("d_id") String d_id) {
         try {
-            Optional<DeptDetails> department = deptDetailsService.getDepartmentById(dId);
-            List<DeptDetails> result = department.map(List::of).orElse(List.of());
-
-            response.put("success", true);
-            response.put("message", "data has been fetched successfully");
-            response.put("result", result);
-            return ResponseEntity.ok(response);
+            Map<String, Object> serviceResponse = deptDetailsService.getDeptById(d_id);
+            return ResponseEntity.ok(serviceResponse);
 
         } catch (Exception err) {
+            Map<String, Object> response = new HashMap<>();
             response.put("success", false);
             response.put("message", "error in fetching details");
-            response.put("result", err.getMessage());
+            response.put("result", null);
             return ResponseEntity.ok(response);
         }
     }
 
     @DeleteMapping("/delete_d_id/{d_id}")
-    public ResponseEntity<Map<String, Object>> deleteDId(@PathVariable("d_id") String dId) {
-        Map<String, Object> response = new HashMap<>();
+    public ResponseEntity<Map<String, Object>> deleteDId(@PathVariable("d_id") String d_id) {
         toRunSaved = false;
 
         try {
-            deptDetailsService.deleteDepartment(dId);
-            response.put("success", true);
-            response.put("message", "Department " + dId + " has been deleted");
-            response.put("result", dId);
-            return ResponseEntity.ok(response);
+            Map<String, Object> serviceResponse = deptDetailsService.deleteDept(d_id);
+            return ResponseEntity.ok(serviceResponse);
 
         } catch (Exception err) {
+            Map<String, Object> response = new HashMap<>();
             response.put("success", false);
-            response.put("message", "error in deleting " + dId + " department");
-            response.put("result", err.getMessage());
+            response.put("message", "error in deleting " + d_id + " department");
+            response.put("result", null);
             return ResponseEntity.ok(response);
         }
     }
 
     @PostMapping("/add_dept")
     public ResponseEntity<Map<String, Object>> addNewDept(@RequestBody Map<String, String> request) {
-        Map<String, Object> response = new HashMap<>();
         toRunSaved = false;
 
         try {
-            String dId = request.get("d_id");
-            String dName = request.get("d_name");
+            String d_id = request.get("d_id");
+            String d_name = request.get("d_name");
 
-            DeptDetails newDept = new DeptDetails();
-            newDept.setDId(dId);
-            newDept.setDName(dName);
-            deptDetailsService.saveDepartment(newDept);
-
-            response.put("success", true);
-            response.put("message", "the given department has been added");
-            response.put("result", "");
-            return ResponseEntity.ok(response);
+            Map<String, Object> serviceResponse = deptDetailsService.addNewDept(d_id, d_name);
+            return ResponseEntity.ok(serviceResponse);
 
         } catch (Exception err) {
+            Map<String, Object> response = new HashMap<>();
             response.put("success", false);
-            response.put("message", "the given department has not been added");
-            response.put("result", "");
+            response.put("message", "error adding department: " + err.getMessage());
+            response.put("result", null);
             return ResponseEntity.ok(response);
         }
     }
 
     @PutMapping("/update_d_id")
     public ResponseEntity<Map<String, Object>> updateDept(@RequestBody Map<String, String> request) {
-        Map<String, Object> response = new HashMap<>();
         toRunSaved = false;
 
         try {
-            String dId = request.get("d_id");
-            String newDId = request.get("new_d_id");
-            String newDName = request.get("new_d_name");
+            String d_id = request.get("d_id");
+            String new_d_id = request.get("new_d_id");
+            String new_d_name = request.get("new_d_name");
 
-            if (newDId == null || newDId.trim().isEmpty() ||
-                    newDName == null || newDName.trim().isEmpty()) {
-                response.put("success", false);
-                response.put("message", "please enter valid new department ID and name");
-                response.put("result", "error");
-                return ResponseEntity.status(400).body(response);
-            }
-
-            deptDetailsService.deleteDepartment(dId);
-
-            DeptDetails updatedDept = new DeptDetails();
-            updatedDept.setDId(newDId);
-            updatedDept.setDName(newDName);
-            deptDetailsService.saveDepartment(updatedDept);
-
-            response.put("success", true);
-            response.put("message", "the department details has been updated successfully");
-            response.put("result", "");
-            return ResponseEntity.ok(response);
+            Map<String, Object> serviceResponse = deptDetailsService.updateDept(d_id, new_d_id, new_d_name);
+            return ResponseEntity.ok(serviceResponse);
 
         } catch (Exception err) {
+            Map<String, Object> response = new HashMap<>();
             response.put("success", false);
-            response.put("message", "error in updating details");
-            response.put("result", err.getMessage());
+            response.put("message", "error in updating details: " + err.getMessage());
+            response.put("result", null);
             return ResponseEntity.ok(response);
         }
     }
 
     @PostMapping("/chk/1")
     public ResponseEntity<Map<String, Object>> chkIsItPresent(@RequestBody Map<String, String> request) {
-        Map<String, Object> response = new HashMap<>();
-
         try {
-            String dId = request.get("d_id");
-            String dName = request.get("d_name");
+            String d_id = request.get("d_id");
+            String d_name = request.get("d_name");
 
-            String processedDId = (dId != null) ? dId.replaceAll("\\s", "").toUpperCase() : null;
-            String processedDName = (dName != null) ? dName.replaceAll("\\s", "").toUpperCase() : null;
-
-            boolean dIdExists = false;
-            boolean dNameExists = false;
-
-            List<DeptDetails> allDepts = deptDetailsService.getAllDepartments();
-
-            if (processedDId != null && !processedDId.trim().isEmpty()) {
-                for (DeptDetails dept : allDepts) {
-                    if (dept.getDId().replaceAll("\\s", "").toUpperCase().equals(processedDId)) {
-                        dIdExists = true;
-                        break;
-                    }
-                }
-            }
-
-            if (processedDName != null && !processedDName.trim().isEmpty()) {
-                for (DeptDetails dept : allDepts) {
-                    if (dept.getDName().replaceAll("\\s", "").toUpperCase().equals(processedDName)) {
-                        dNameExists = true;
-                        break;
-                    }
-                }
-            }
-
-            Map<String, Object> result = new HashMap<>();
-            result.put("d_id", dIdExists);
-            result.put("d_name", dNameExists);
-
-            response.put("success", true);
-            response.put("message", "d_id exit ");
-            response.put("result", result);
-            return ResponseEntity.ok(response);
+            Map<String, Object> serviceResponse = deptDetailsService.checkDeptExists(d_id, d_name);
+            return ResponseEntity.ok(serviceResponse);
 
         } catch (Exception err) {
+            Map<String, Object> response = new HashMap<>();
             Map<String, Object> result = new HashMap<>();
-            result.put("d_id", false);
-            result.put("d_name", false);
+            result.put("d_id_exists", false);
+            result.put("d_name_exists", false);
 
             response.put("success", false);
-            response.put("message", "d_id does not exist");
+            response.put("message", "error checking department: " + err.getMessage());
             response.put("result", result);
             return ResponseEntity.ok(response);
         }

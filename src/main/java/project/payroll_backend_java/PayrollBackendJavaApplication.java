@@ -7,7 +7,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class PayrollBackendJavaApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(PayrollBackendJavaApplication.class, args);
+
+        SpringApplication.run(PayrollBackendJavaApplication.class, args);
 	}
 
 }

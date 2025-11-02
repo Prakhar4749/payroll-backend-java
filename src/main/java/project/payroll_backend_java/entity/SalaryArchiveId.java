@@ -5,43 +5,43 @@ import java.util.Objects;
 
 public class SalaryArchiveId implements Serializable {
 
-    private String eId;
-    private String salaryMonth;
-    private Integer salaryYear;
+    private String e_id;
+    private String salary_month;
+    private Integer salary_year;
 
     // Default constructor
     public SalaryArchiveId() {}
 
     // Constructor with all fields
-    public SalaryArchiveId(String eId, String salaryMonth, Integer salaryYear) {
-        this.eId = eId;
-        this.salaryMonth = salaryMonth;
-        this.salaryYear = salaryYear;
+    public SalaryArchiveId(String e_id, String salary_month, Integer salary_year) {
+        this.e_id = e_id;
+        this.salary_month = salary_month;
+        this.salary_year = salary_year;
     }
 
     // Getters and Setters
-    public String getEId() {
-        return eId;
+    public String getE_id() {
+        return e_id;
     }
 
-    public void setEId(String eId) {
-        this.eId = eId;
+    public void setE_id(String e_id) {
+        this.e_id = e_id;
     }
 
-    public String getSalaryMonth() {
-        return salaryMonth;
+    public String getSalary_month() {
+        return salary_month;
     }
 
-    public void setSalaryMonth(String salaryMonth) {
-        this.salaryMonth = salaryMonth;
+    public void setSalary_month(String salary_month) {
+        this.salary_month = salary_month;
     }
 
-    public Integer getSalaryYear() {
-        return salaryYear;
+    public Integer getSalary_year() {
+        return salary_year;
     }
 
-    public void setSalaryYear(Integer salaryYear) {
-        this.salaryYear = salaryYear;
+    public void setSalary_year(Integer salary_year) {
+        this.salary_year = salary_year;
     }
 
     // equals method (required for composite key)
@@ -50,24 +50,24 @@ public class SalaryArchiveId implements Serializable {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
         SalaryArchiveId that = (SalaryArchiveId) obj;
-        return Objects.equals(eId, that.eId) &&
-                Objects.equals(salaryMonth, that.salaryMonth) &&
-                Objects.equals(salaryYear, that.salaryYear);
+        return Objects.equals(e_id, that.e_id) &&
+                Objects.equals(salary_month, that.salary_month) &&
+                Objects.equals(salary_year, that.salary_year);
     }
 
     // hashCode method (required for composite key)
     @Override
     public int hashCode() {
-        return Objects.hash(eId, salaryMonth, salaryYear);
+        return Objects.hash(e_id, salary_month, salary_year);
     }
 
     // toString method (useful for debugging)
     @Override
     public String toString() {
         return "SalaryArchiveId{" +
-                "eId='" + eId + '\'' +
-                ", salaryMonth='" + salaryMonth + '\'' +
-                ", salaryYear=" + salaryYear +
+                "e_id='" + e_id + '\'' +
+                ", salary_month='" + salary_month + '\'' +
+                ", salary_year=" + salary_year +
                 '}';
     }
 }
